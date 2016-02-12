@@ -1,0 +1,82 @@
+{% import '_includes/forms' as forms %}
+
+{% if settings.isConnected == 0 %}
+
+<h2>Step 1: Instagram Authentication</h2>
+
+<p>This is what allows Craft to fetch your Instagram posts for you. Don't worry,
+you'll only have to do this once!</p>
+
+<p>You'll get this information from Instagram by registering a new client. You
+can create an app <a href="https://www.instagram.com/developer/register/" target="_blank">here</a>.</p>
+
+<hr>
+
+<h4>Your App Settings:</h4>
+
+<p>Your Redirect URI: <strong>{{ siteUrl }}instagrabber/connect</strong></p>
+
+{{
+	forms.textField({
+		label: "Client ID",
+		name: 'clientId',
+		value: settings.clientId
+
+	})
+}}
+
+{{
+	forms.textField({
+		label: "Client Secret",
+		name: 'clientSecret',
+		value: settings.clientSecret
+
+	})
+}}
+
+<hr>
+
+<h2>Step 2: Connecting</h2>
+
+<p>Save this page, then come back and click the button
+below to connect your site to your Instagram account.</p>
+
+<a href="https://api.instagram.com/oauth/authorize/?client_id={{ settings.clientId }}&redirect_uri={{ siteUrl }}instagrabber/connect&amp;response_type=code" class="btn submit">Connect to Instagram</a>
+
+{% else %}
+
+<h2>Connnected Account</h2>
+
+<div class="connection-profile">
+	<img src="{{ settings.profile_picture }}" alt="{{ settings.full_name }}" class="connection-profile__photo">
+	<span class="connection-profile__username">{{ settings.username }}</span>
+	<span class="connection-profile__name">{{ settings.full_name }}</span>
+
+<a href="{{ actionUrl('instagrabber/disconnect') }}" class="btn">Disconnect</a>
+
+{% endif %}
+
+
+{% set profileCss %}
+	.connection-profile__photo {
+		border: 1px solid #e6e6e6;
+		display: block;
+		float: left;
+		margin: 0 1rem 1rem 0;
+	}
+	.connection-profile__username {
+		display: block;
+		font-size: 1.6rem;
+		line-height: 1;
+		margin-bottom: 0.5rem;
+	}
+	.connection-profile__name {
+		color: #B3B3B3;
+		display: block;
+		font-size: 1rem;
+		line-height: 1em;
+		margin-bottom: 1rem;
+	}
+{% endset %}
+
+{% includeCss profileCss %}
