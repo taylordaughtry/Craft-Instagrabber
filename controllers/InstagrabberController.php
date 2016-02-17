@@ -8,23 +8,13 @@ class InstagrabberController extends BaseController
 	public function __construct()
 	{
 		$this->settings = craft()->plugins->getPlugin('instagrabber')->getSettings();
+
+        $this->client = new \Guzzle\Http\Client();
 	}
 
     public function actionConnect()
     {
-    	$code = craft()->request->getQuery('code');
-
-    	$headers = [
-    		'client_id' => $this->settings->clientId,
-    		'client_secret' => $this->settings->clientSecret,
-    		'grant_type' => 'authorization_code',
-    		'redirect_uri' => craft()->getSiteUrl() . 'instagrabber/connect',
-    		'code' => $code,
-    	];
-
-    	$client = new \Guzzle\Http\Client();
-
-    	$url = 'https://api.instagram.com/oauth/access_token';
+        $url = 'https://api.instagram.com/oauth/access_token';
 
     	$postData = [
     		'client_id' => $this->settings->clientId,
@@ -34,7 +24,6 @@ class InstagrabberController extends BaseController
     		'code' => $code,
     	];
 
-    	// The null value is an optional array of headers
     	$request = $client->post($url, null, $postData);
 
     	try {
