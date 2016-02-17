@@ -5,28 +5,30 @@ class InstagrabberController extends BaseController
 {
 	protected $settings;
 
+	protected $client;
+
 	public function __construct()
 	{
 		$this->settings = craft()->plugins->getPlugin('instagrabber')->getSettings();
 
-        $this->client = new \Guzzle\Http\Client();
+		$this->client = new \Guzzle\Http\Client();
 	}
 
-    public function actionConnect()
-    {
-        $url = 'https://api.instagram.com/oauth/access_token';
+	public function actionConnect()
+	{
+		$url = 'https://api.instagram.com/oauth/access_token';
 
-    	$postData = [
-    		'client_id' => $this->settings->clientId,
-    		'client_secret' => $this->settings->clientSecret,
-    		'grant_type' => 'authorization_code',
-    		'redirect_uri' => craft()->getSiteUrl() . 'instagrabber/connect',
-    		'code' => $code,
-    	];
+		$postData = [
+			'client_id' => $this->settings->clientId,
+			'client_secret' => $this->settings->clientSecret,
+			'grant_type' => 'authorization_code',
+			'redirect_uri' => craft()->getSiteUrl() . 'instagrabber/connect',
+			'code' => $code,
+		];
 
-    	$request = $client->post($url, null, $postData);
+		$request = $this->client->post($url, null, $postData);
 
-    	try {
+		try {
 			$response = $request->send();
 
 			// If we got a successful return, tell Craft to save that setting.
@@ -52,20 +54,20 @@ class InstagrabberController extends BaseController
 		craft()->userSession->setNotice('Account connected.');
 
 		$this->redirect(UrlHelper::getCpUrl('settings/plugins/instagrabber'));
-    }
+	}
 
-    public function actionDisconnect()
-    {
-    	$instagrabber = craft()->plugins->getPlugin('instagrabber');
+	public function actionDisconnect()
+	{
+		$instagrabber = craft()->plugins->getPlugin('instagrabber');
 
-    	$params = [
-    		'isConnected' => 0,
-    	];
+		$params = [
+			'isConnected' => 0,
+		];
 
-    	craft()->plugins->savePluginSettings($instagrabber, $params);
+		craft()->plugins->savePluginSettings($instagrabber, $params);
 
-    	craft()->userSession->setNotice('Account disconnected.');
+		craft()->userSession->setNotice('Account disconnected.');
 
 		$this->redirect(UrlHelper::getCpUrl('settings/plugins/instagrabber'));
-    }
+	}
 }
