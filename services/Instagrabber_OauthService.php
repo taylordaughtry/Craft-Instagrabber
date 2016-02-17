@@ -33,6 +33,7 @@ class Instagrabber_OauthService extends BaseApplicationComponent
 					'profile_picture' => $data['profile_picture'],
 					'full_name' => $data['full_name'],
 					'isConnected' => 1,
+					'accessToken' => $response->json()['access_token'],
 				];
 
 				$this->updatePluginSettings($settings);

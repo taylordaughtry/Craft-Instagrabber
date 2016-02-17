@@ -64,6 +64,7 @@ class InstagrabberPlugin extends BasePlugin
 			'username' => array(AttributeType::String, 'default' => 0),
 			'profile_picture' => array(AttributeType::String, 'default' => 0),
 			'full_name' => array(AttributeType::String, 'default' => 0),
+			'accessToken' => array(AttributeType::String, 'default' => ''),
 		];
 	}
 
